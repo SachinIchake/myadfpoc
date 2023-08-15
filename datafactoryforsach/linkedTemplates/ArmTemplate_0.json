@@ -55,7 +55,28 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqldb')]",
+			"name": "[concat(parameters('factoryName'), '/AzureSqlChurnTbl')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseLink",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "customerchurn"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqldbjson')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -403,24 +424,140 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/AzureSqlChurnTbl')]",
+			"name": "[concat(parameters('factoryName'), '/jsonds')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "AzureSqlDatabaseLink",
+					"referenceName": "stogage_gen2_link",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
+				"type": "Json",
 				"typeProperties": {
-					"schema": "SalesLT",
-					"table": "customerchurn"
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "userinfo.json",
+						"fileSystem": "jsondata"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"count": {
+							"type": "integer"
+						},
+						"results": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"key": {
+										"type": "string"
+									},
+									"id": {
+										"type": "string"
+									}
+								}
+							}
+						},
+						"users": {
+							"type": "object",
+							"properties": {
+								"1000000": {
+									"type": "object",
+									"properties": {
+										"full_name": {
+											"type": "string"
+										},
+										"photo_path": {
+											"type": "string"
+										},
+										"email_address": {
+											"type": "string"
+										},
+										"headline": {
+											"type": "string"
+										},
+										"generic": {
+											"type": "boolean"
+										},
+										"disabled": {
+											"type": "boolean"
+										},
+										"update_whitelist": {
+											"type": "array",
+											"items": {
+												"type": "string"
+											}
+										},
+										"account_id": {
+											"type": "string"
+										},
+										"id": {
+											"type": "string"
+										}
+									}
+								},
+								"2000000": {
+									"type": "object",
+									"properties": {
+										"full_name": {
+											"type": "string"
+										},
+										"photo_path": {
+											"type": "string"
+										},
+										"email_address": {
+											"type": "string"
+										},
+										"headline": {
+											"type": "string"
+										},
+										"generic": {
+											"type": "boolean"
+										},
+										"disabled": {
+											"type": "boolean"
+										},
+										"update_whitelist": {
+											"type": "array",
+											"items": {
+												"type": "string"
+											}
+										},
+										"account_id": {
+											"type": "string"
+										},
+										"id": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						},
+						"meta": {
+							"type": "object",
+							"properties": {
+								"count": {
+									"type": "integer"
+								},
+								"page_count": {
+									"type": "integer"
+								},
+								"page_number": {
+									"type": "integer"
+								},
+								"page_size": {
+									"type": "integer"
+								}
+							}
+						}
+					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLink')]"
+				"[concat(variables('factoryId'), '/linkedServices/stogage_gen2_link')]"
 			]
 		},
 		{
@@ -498,7 +635,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/json-processing')]",
+			"name": "[concat(parameters('factoryName'), '/json-processing_new')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -587,14 +724,14 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "AzureSqldb",
+											"referenceName": "AzureSqldbjson",
 											"type": "DatasetReference",
 											"parameters": {}
 										}
 									],
 									"outputs": [
 										{
-											"referenceName": "AzureSqldb",
+											"referenceName": "AzureSqldbjson",
 											"type": "DatasetReference",
 											"parameters": {}
 										}
@@ -628,7 +765,7 @@
 								}
 							},
 							"dataset": {
-								"referenceName": "json_ds",
+								"referenceName": "jsonds",
 								"type": "DatasetReference",
 								"parameters": {}
 							},
@@ -649,8 +786,8 @@
 				"lastPublishTime": "2023-05-02T12:50:41Z"
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/json_ds')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqldb')]"
+				"[concat(variables('factoryId'), '/datasets/jsonds')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqldbjson')]"
 			]
 		},
 		{
