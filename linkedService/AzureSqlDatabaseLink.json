@@ -1,0 +1,12 @@
+{
+	"name": "AzureSqlDatabaseLink",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "integrated security=False;encrypt=True;connection timeout=30;data source=mysqlserverforsachin.database.windows.net;initial catalog=mysqldbfo;user id=sachin",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDFBMkFCRTFCLUZBMDQtNDIwNy1CQjE5LTdFQkVDRjUzMzIxNV8wMTI5OWRiMi0xMjQxLTQ1MGEtYTdjZS05ZWNjZTNjZWE1M2YiDQp9"
+		}
+	}
+}

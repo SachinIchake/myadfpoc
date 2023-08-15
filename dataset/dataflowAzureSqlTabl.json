@@ -1,0 +1,17 @@
+{
+    "name": "dataflowAzureSqlTabl",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "AzureSqlDatabaseLink",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "AzureSqlTable",
+        "schema": [],
+        "typeProperties": {
+            "schema": "SalesLT",
+            "table": "mytestdatawithdf"
+        }
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}

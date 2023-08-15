@@ -1,0 +1,9 @@
+{
+	"name": "datafactoryforsach",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "f7c19a4c-ff71-4aa7-b1dd-15d738bee898",
+		"tenantId": "16b3c013-d300-468d-ac64-7eda0820b6d3"
+	}
+}

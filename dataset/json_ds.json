@@ -1,0 +1,133 @@
+{
+	"name": "json_ds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "stogage_gen2_link",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "userinfo.json",
+				"fileSystem": "jsondata"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"count": {
+					"type": "integer"
+				},
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"key": {
+								"type": "string"
+							},
+							"id": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"users": {
+					"type": "object",
+					"properties": {
+						"1000000": {
+							"type": "object",
+							"properties": {
+								"full_name": {
+									"type": "string"
+								},
+								"photo_path": {
+									"type": "string"
+								},
+								"email_address": {
+									"type": "string"
+								},
+								"headline": {
+									"type": "string"
+								},
+								"generic": {
+									"type": "boolean"
+								},
+								"disabled": {
+									"type": "boolean"
+								},
+								"update_whitelist": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								},
+								"account_id": {
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								}
+							}
+						},
+						"2000000": {
+							"type": "object",
+							"properties": {
+								"full_name": {
+									"type": "string"
+								},
+								"photo_path": {
+									"type": "string"
+								},
+								"email_address": {
+									"type": "string"
+								},
+								"headline": {
+									"type": "string"
+								},
+								"generic": {
+									"type": "boolean"
+								},
+								"disabled": {
+									"type": "boolean"
+								},
+								"update_whitelist": {
+									"type": "array",
+									"items": {
+										"type": "string"
+									}
+								},
+								"account_id": {
+									"type": "string"
+								},
+								"id": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"meta": {
+					"type": "object",
+					"properties": {
+						"count": {
+							"type": "integer"
+						},
+						"page_count": {
+							"type": "integer"
+						},
+						"page_number": {
+							"type": "integer"
+						},
+						"page_size": {
+							"type": "integer"
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
