@@ -1,0 +1,103 @@
+{
+	"name": "jsonProcessingDF",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "jsonds",
+						"type": "DatasetReference"
+					},
+					"name": "datasource"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "dataflowAzureSqlTable",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "flattendata"
+				},
+				{
+					"name": "flattenvendor"
+				},
+				{
+					"name": "flattenupdatewhitelist"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          count as integer,",
+				"          results as (key as string, id as string)[],",
+				"          users as ({1000000} as (full_name as string, photo_path as string, email_address as string, headline as string, generic as boolean, disabled as boolean, update_whitelist as string[], account_id as string, id as string), {2000000} as (full_name as string, photo_path as string, email_address as string, headline as string, generic as boolean, disabled as boolean, update_whitelist as string[], account_id as string, id as string)),",
+				"          meta as (count as integer, page_count as integer, page_number as integer, page_size as integer)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> datasource",
+				"datasource foldDown(unroll(data),",
+				"     mapColumn(",
+				"          parent_companyId = data.companyId,",
+				"          designation = data.designation,",
+				"          desiredSkill = data.desiredSkill,",
+				"          employeeJobDistribution = data.employeeJobDistribution,",
+				"          jobTitle = data.jobTitle,",
+				"          jobUrl = data.jobUrl,",
+				"          location = data.location,",
+				"          jobId = data.endtDate,",
+				"          vendorJobDistribution = data.vendorJobDistribution,",
+				"          distributedChannels = data.distributedChannels",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flattendata",
+				"flattendata foldDown(unroll(vendorJobDistribution),",
+				"     mapColumn(",
+				"          jobId = vendorJobDistribution.jobId,",
+				"          vendor_companyId = vendorJobDistribution.vendor.companyId,",
+				"          partnerName = vendorJobDistribution.vendor.partnerName,",
+				"          vendorName = vendorJobDistribution.vendorName,",
+				"          designation,",
+				"          desiredSkill,",
+				"          location,",
+				"          distributedChannels,",
+				"          companyId = parent_companyId",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flattenvendor",
+				"flattenvendor foldDown(unroll(distributedChannels),",
+				"     mapColumn(",
+				"          companyId,",
+				"          location,",
+				"          desiredSkill,",
+				"          designation,",
+				"          vendorName,",
+				"          partnerName,",
+				"          vendor_companyId,",
+				"          distributedChannels",
+				"     ),",
+				"     skipDuplicateMapInputs: false,",
+				"     skipDuplicateMapOutputs: false) ~> flattenupdatewhitelist",
+				"flattenupdatewhitelist sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     preCommands: [],",
+				"     postCommands: []) ~> sink1"
+			]
+		}
+	}
+}
