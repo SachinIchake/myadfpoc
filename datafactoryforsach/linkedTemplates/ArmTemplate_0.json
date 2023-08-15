@@ -1,0 +1,813 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "datafactoryforsach"
+		},
+		"AzureSqlDatabaseLink_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseLink'"
+		},
+		"stogage_gen2_link_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'stogage_gen2_link'"
+		},
+		"stogage_gen2_link_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mystorageactforsachin.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseLink')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabaseLink_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/stogage_gen2_link')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('stogage_gen2_link_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('stogage_gen2_link_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqldb')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseLink",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "mytestdata"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/csvds')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "stogage_gen2_link",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "HR-Employee-Attrition.csv",
+						"fileSystem": "structureddata"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Age",
+						"type": "String"
+					},
+					{
+						"name": "Attrition",
+						"type": "String"
+					},
+					{
+						"name": "BusinessTravel",
+						"type": "String"
+					},
+					{
+						"name": "DailyRate",
+						"type": "String"
+					},
+					{
+						"name": "Department",
+						"type": "String"
+					},
+					{
+						"name": "DistanceFromHome",
+						"type": "String"
+					},
+					{
+						"name": "Education",
+						"type": "String"
+					},
+					{
+						"name": "EducationField",
+						"type": "String"
+					},
+					{
+						"name": "EmployeeCount",
+						"type": "String"
+					},
+					{
+						"name": "EmployeeNumber",
+						"type": "String"
+					},
+					{
+						"name": "EnvironmentSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
+						"type": "String"
+					},
+					{
+						"name": "HourlyRate",
+						"type": "String"
+					},
+					{
+						"name": "JobInvolvement",
+						"type": "String"
+					},
+					{
+						"name": "JobLevel",
+						"type": "String"
+					},
+					{
+						"name": "JobRole",
+						"type": "String"
+					},
+					{
+						"name": "JobSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "MaritalStatus",
+						"type": "String"
+					},
+					{
+						"name": "MonthlyIncome",
+						"type": "String"
+					},
+					{
+						"name": "MonthlyRate",
+						"type": "String"
+					},
+					{
+						"name": "NumCompaniesWorked",
+						"type": "String"
+					},
+					{
+						"name": "Over18",
+						"type": "String"
+					},
+					{
+						"name": "OverTime",
+						"type": "String"
+					},
+					{
+						"name": "PercentSalaryHike",
+						"type": "String"
+					},
+					{
+						"name": "PerformanceRating",
+						"type": "String"
+					},
+					{
+						"name": "RelationshipSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "StandardHours",
+						"type": "String"
+					},
+					{
+						"name": "StockOptionLevel",
+						"type": "String"
+					},
+					{
+						"name": "TotalWorkingYears",
+						"type": "String"
+					},
+					{
+						"name": "TrainingTimesLastYear",
+						"type": "String"
+					},
+					{
+						"name": "WorkLifeBalance",
+						"type": "String"
+					},
+					{
+						"name": "YearsAtCompany",
+						"type": "String"
+					},
+					{
+						"name": "YearsInCurrentRole",
+						"type": "String"
+					},
+					{
+						"name": "YearsSinceLastPromotion",
+						"type": "String"
+					},
+					{
+						"name": "YearsWithCurrManager",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/stogage_gen2_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflowAzureSqlTabl')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseLink",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "mytestdatawithdf"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/json_ds')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "stogage_gen2_link",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "userinfo.json",
+						"fileSystem": "jsondata"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"count": {
+							"type": "integer"
+						},
+						"results": {
+							"type": "array",
+							"items": {
+								"type": "object",
+								"properties": {
+									"key": {
+										"type": "string"
+									},
+									"id": {
+										"type": "string"
+									}
+								}
+							}
+						},
+						"users": {
+							"type": "object",
+							"properties": {
+								"1000000": {
+									"type": "object",
+									"properties": {
+										"full_name": {
+											"type": "string"
+										},
+										"photo_path": {
+											"type": "string"
+										},
+										"email_address": {
+											"type": "string"
+										},
+										"headline": {
+											"type": "string"
+										},
+										"generic": {
+											"type": "boolean"
+										},
+										"disabled": {
+											"type": "boolean"
+										},
+										"update_whitelist": {
+											"type": "array",
+											"items": {
+												"type": "string"
+											}
+										},
+										"account_id": {
+											"type": "string"
+										},
+										"id": {
+											"type": "string"
+										}
+									}
+								},
+								"2000000": {
+									"type": "object",
+									"properties": {
+										"full_name": {
+											"type": "string"
+										},
+										"photo_path": {
+											"type": "string"
+										},
+										"email_address": {
+											"type": "string"
+										},
+										"headline": {
+											"type": "string"
+										},
+										"generic": {
+											"type": "boolean"
+										},
+										"disabled": {
+											"type": "boolean"
+										},
+										"update_whitelist": {
+											"type": "array",
+											"items": {
+												"type": "string"
+											}
+										},
+										"account_id": {
+											"type": "string"
+										},
+										"id": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						},
+						"meta": {
+							"type": "object",
+							"properties": {
+								"count": {
+									"type": "integer"
+								},
+								"page_count": {
+									"type": "integer"
+								},
+								"page_number": {
+									"type": "integer"
+								},
+								"page_size": {
+									"type": "integer"
+								}
+							}
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/stogage_gen2_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlChurnTbl')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseLink",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "customerchurn"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/copytosqldb')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy Data To SQL",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "csvds",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlChurnTbl",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/csvds')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlChurnTbl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/json-processing')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "ForEach1",
+						"type": "ForEach",
+						"dependsOn": [
+							{
+								"activity": "Lookup",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@activity('Lookup').output.value",
+								"type": "Expression"
+							},
+							"isSequential": true,
+							"activities": [
+								{
+									"name": "Set variable1",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "jsonData",
+										"value": {
+											"value": "@string(item())",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Copy data",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Set variable1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"sqlReaderQuery": {
+												"value": "DECLARE @json NVARCHAR(MAX);  \nSET @json = N'@{variables('jsondata')}';  \n  \nSELECT *\nFROM OPENJSON(@json, N'$.data') \nWITH ( \njobTitle NVARCHAR(MAX) N'$.jobTitle',\njobCode NVARCHAR(MAX) N'$.jobCode' ,\nlocation NVARCHAR(MAX) N'$.location',\nskillSet NVARCHAR(MAX) N'$.skillSet',\ncompanyId INT  N'$.companyId',\ndeptFullCode NVARCHAR(MAX) N'$.deptFullCode',\nvendorJobDistribution  NVARCHAR(MAX) N'$.vendorJobDistribution' as JSON,\ndistributedChannels NVARCHAR(MAX) N'$.distributedChannels' as JSON\n) \nOUTER APPLY OPENJSON(vendorJobDistribution) WITH \n(\njobId NVARCHAR(MAX) N'$.jobId',\nuserId NVARCHAR(MAX) N'$.userId',\nvendor_userId NVARCHAR(MAX) N'$.vendor.userId',\nuser_uuid NVARCHAR(MAX) N'$.vendor.user.uuid'\n)\nOUTER APPLY OPENJSON(distributedChannels) WITH \n(\nvalue nvarchar(max) '$'\n)\n;\n",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false,
+											"tableOption": "autoCreate",
+											"disableMetricsCollection": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "AzureSqldb",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "AzureSqldb",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Lookup",
+						"type": "Lookup",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "JsonSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							},
+							"dataset": {
+								"referenceName": "json_ds",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"firstRowOnly": false
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"variables": {
+					"jsonData": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"lastPublishTime": "2023-05-02T12:50:41Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/json_ds')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqldb')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/jsonProcessingDataflow')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "json_ds",
+								"type": "DatasetReference"
+							},
+							"name": "datasource"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "dataflowAzureSqlTabl",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "flattendata"
+						},
+						{
+							"name": "flattenvendor"
+						},
+						{
+							"name": "flattenupdatewhitelist"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          currentPage as boolean,",
+						"          data as (companyId as short, createdDate as string, deptFullCode as string, designation as string, desiredSkill as string, distributedChannels as string[], employeeJobDistribution as string, enabledForCareerSite as boolean, endtDate as string, id as short, jobCode as short, jobTitle as string, jobUrl as string, jobVisibiltyLevel as string, location as string, maxJobSalary as string, maxYrsOfExperience as string, minJobSalary as string, minYrsOfExperience as string, modifiedDate as string, positionsReq as boolean, privateJobShare as boolean, qualification as string, role as string, skillSet as string, skillsToEvaluate as string, startDate as string, status as boolean, vendorJobDistribution as (groupId as string, id as boolean, jobId as boolean, notified as boolean, profileValidity as string, userId as boolean, validityInDays as boolean, vendor as (added_date as string, companyId as boolean, creditConfig as string, email as string, endDate as string, id as boolean, isActive as boolean, isApproved as boolean, lastLoggedIn as string, partnerName as string, reason as string, sourceValidityConfigurationId as string, startDate as string, user as (companyId as boolean, competency as string, departmentalRoles as string, emailId as string, employeeId as string, id as boolean, isCandidateCredentialSent as boolean, isInterviewCredentialSent as string, issuperuser as boolean, linkedInProfile as string, logoutTime as string, modifiedByUserId as boolean, passwordReuseCount as boolean, phoneNo as string, roleId as boolean, status as boolean, subscribeToEmail as string, userDuplicateId as boolean, username as string, uuid as string), userId as boolean, vendorStatus as boolean), vendorAssignDate as string, vendorId as boolean, vendorName as string)[])[],",
+						"          pageSize as short,",
+						"          totalCount as short",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'arrayOfDocuments') ~> datasource",
+						"datasource foldDown(unroll(data),",
+						"     mapColumn(",
+						"          parent_companyId = data.companyId,",
+						"          designation = data.designation,",
+						"          desiredSkill = data.desiredSkill,",
+						"          employeeJobDistribution = data.employeeJobDistribution,",
+						"          jobTitle = data.jobTitle,",
+						"          jobUrl = data.jobUrl,",
+						"          location = data.location,",
+						"          jobId = data.endtDate,",
+						"          vendorJobDistribution = data.vendorJobDistribution,",
+						"          distributedChannels = data.distributedChannels",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flattendata",
+						"flattendata foldDown(unroll(vendorJobDistribution),",
+						"     mapColumn(",
+						"          jobId = vendorJobDistribution.jobId,",
+						"          vendor_companyId = vendorJobDistribution.vendor.companyId,",
+						"          partnerName = vendorJobDistribution.vendor.partnerName,",
+						"          vendorName = vendorJobDistribution.vendorName,",
+						"          designation,",
+						"          desiredSkill,",
+						"          location,",
+						"          distributedChannels,",
+						"          companyId = parent_companyId",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flattenvendor",
+						"flattenvendor foldDown(unroll(distributedChannels),",
+						"     mapColumn(",
+						"          companyId,",
+						"          location,",
+						"          desiredSkill,",
+						"          designation,",
+						"          vendorName,",
+						"          partnerName,",
+						"          vendor_companyId,",
+						"          distributedChannels",
+						"     ),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> flattenupdatewhitelist",
+						"flattenupdatewhitelist sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     format: 'table',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true,",
+						"     errorHandlingOption: 'stopOnFirstError',",
+						"     preCommands: [],",
+						"     postCommands: []) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/json_ds')]",
+				"[concat(variables('factoryId'), '/datasets/dataflowAzureSqlTabl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/json-processing-df')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Json Data flow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "jsonProcessingDataflow",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"datasource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/jsonProcessingDataflow')]"
+			]
+		}
+	]
+}
