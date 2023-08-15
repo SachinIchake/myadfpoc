@@ -51,7 +51,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSqlChurnTable",
+						"referenceName": "AzureSqlChurnTbl",
 						"type": "DatasetReference"
 					}
 				]

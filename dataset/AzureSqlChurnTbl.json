@@ -1,0 +1,16 @@
+{
+	"name": "AzureSqlChurnTbl",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseLink",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "SalesLT",
+			"table": "customerchurn"
+		}
+	}
+}
