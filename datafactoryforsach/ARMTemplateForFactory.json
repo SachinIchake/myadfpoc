@@ -99,53 +99,6 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/json-processing-df')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Json Data flow",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "jsonProcessingDataflow",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"datasource": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/jsonProcessingDataflow')]"
-			]
-		},
-		{
 			"name": "[concat(parameters('factoryName'), '/json-processing_new')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -299,6 +252,53 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/jsonds')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqldbjson')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/json-processingdf')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Json Data flow",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "jsonProcessingDF",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"datasource": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/jsonProcessingDF')]"
 			]
 		},
 		{
@@ -513,7 +513,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflowAzureSqlTabl')]",
+			"name": "[concat(parameters('factoryName'), '/dataflowAzureSqlTable')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -531,143 +531,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLink')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/json_ds')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "stogage_gen2_link",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Json",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileName": "userinfo.json",
-						"fileSystem": "jsondata"
-					}
-				},
-				"schema": {
-					"type": "object",
-					"properties": {
-						"count": {
-							"type": "integer"
-						},
-						"results": {
-							"type": "array",
-							"items": {
-								"type": "object",
-								"properties": {
-									"key": {
-										"type": "string"
-									},
-									"id": {
-										"type": "string"
-									}
-								}
-							}
-						},
-						"users": {
-							"type": "object",
-							"properties": {
-								"1000000": {
-									"type": "object",
-									"properties": {
-										"full_name": {
-											"type": "string"
-										},
-										"photo_path": {
-											"type": "string"
-										},
-										"email_address": {
-											"type": "string"
-										},
-										"headline": {
-											"type": "string"
-										},
-										"generic": {
-											"type": "boolean"
-										},
-										"disabled": {
-											"type": "boolean"
-										},
-										"update_whitelist": {
-											"type": "array",
-											"items": {
-												"type": "string"
-											}
-										},
-										"account_id": {
-											"type": "string"
-										},
-										"id": {
-											"type": "string"
-										}
-									}
-								},
-								"2000000": {
-									"type": "object",
-									"properties": {
-										"full_name": {
-											"type": "string"
-										},
-										"photo_path": {
-											"type": "string"
-										},
-										"email_address": {
-											"type": "string"
-										},
-										"headline": {
-											"type": "string"
-										},
-										"generic": {
-											"type": "boolean"
-										},
-										"disabled": {
-											"type": "boolean"
-										},
-										"update_whitelist": {
-											"type": "array",
-											"items": {
-												"type": "string"
-											}
-										},
-										"account_id": {
-											"type": "string"
-										},
-										"id": {
-											"type": "string"
-										}
-									}
-								}
-							}
-						},
-						"meta": {
-							"type": "object",
-							"properties": {
-								"count": {
-									"type": "integer"
-								},
-								"page_count": {
-									"type": "integer"
-								},
-								"page_number": {
-									"type": "integer"
-								},
-								"page_size": {
-									"type": "integer"
-								}
-							}
-						}
-					}
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/stogage_gen2_link')]"
 			]
 		},
 		{
@@ -691,114 +554,262 @@
 				"schema": {
 					"type": "object",
 					"properties": {
-						"count": {
-							"type": "integer"
-						},
-						"results": {
+						"data": {
 							"type": "array",
 							"items": {
 								"type": "object",
 								"properties": {
-									"key": {
+									"id": {
+										"type": "integer"
+									},
+									"jobCode": {
+										"type": "integer"
+									},
+									"jobTitle": {
 										"type": "string"
 									},
-									"id": {
+									"jobUrl": {
 										"type": "string"
+									},
+									"role": {
+										"type": "null"
+									},
+									"location": {
+										"type": "string"
+									},
+									"maxYrsOfExperience": {
+										"type": "null"
+									},
+									"minYrsOfExperience": {
+										"type": "null"
+									},
+									"skillSet": {
+										"type": "string"
+									},
+									"skillsToEvaluate": {
+										"type": "string"
+									},
+									"desiredSkill": {
+										"type": "string"
+									},
+									"designation": {
+										"type": "null"
+									},
+									"positionsReq": {
+										"type": "string"
+									},
+									"minJobSalary": {
+										"type": "null"
+									},
+									"maxJobSalary": {
+										"type": "null"
+									},
+									"qualification": {
+										"type": "null"
+									},
+									"companyId": {
+										"type": "integer"
+									},
+									"createdDate": {
+										"type": "string"
+									},
+									"modifiedDate": {
+										"type": "string"
+									},
+									"deptFullCode": {
+										"type": "string"
+									},
+									"startDate": {
+										"type": "null"
+									},
+									"endtDate": {
+										"type": "null"
+									},
+									"status": {
+										"type": "integer"
+									},
+									"privateJobShare": {
+										"type": "string"
+									},
+									"jobVisibiltyLevel": {
+										"type": "string"
+									},
+									"employeeJobDistribution": {
+										"type": "null"
+									},
+									"vendorJobDistribution": {
+										"type": "array",
+										"items": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"jobId": {
+													"type": "integer"
+												},
+												"userId": {
+													"type": "integer"
+												},
+												"vendorId": {
+													"type": "integer"
+												},
+												"vendor": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "integer"
+														},
+														"partnerName": {
+															"type": "string"
+														},
+														"userId": {
+															"type": "integer"
+														},
+														"companyId": {
+															"type": "integer"
+														},
+														"isActive": {
+															"type": "integer"
+														},
+														"added_date": {
+															"type": "string"
+														},
+														"lastLoggedIn": {
+															"type": "string"
+														},
+														"reason": {
+															"type": "string"
+														},
+														"vendorStatus": {
+															"type": "integer"
+														},
+														"sourceValidityConfigurationId": {
+															"type": "string"
+														},
+														"creditConfig": {
+															"type": "string"
+														},
+														"startDate": {
+															"type": "string"
+														},
+														"endDate": {
+															"type": "string"
+														},
+														"user": {
+															"type": "object",
+															"properties": {
+																"id": {
+																	"type": "integer"
+																},
+																"uuid": {
+																	"type": "string"
+																},
+																"username": {
+																	"type": "string"
+																},
+																"emailId": {
+																	"type": "string"
+																},
+																"employeeId": {
+																	"type": "string"
+																},
+																"phoneNo": {
+																	"type": "string"
+																},
+																"linkedInProfile": {
+																	"type": "string"
+																},
+																"modifiedByUserId": {
+																	"type": "integer"
+																},
+																"status": {
+																	"type": "integer"
+																},
+																"issuperuser": {
+																	"type": "integer"
+																},
+																"companyId": {
+																	"type": "integer"
+																},
+																"isInterviewCredentialSent": {
+																	"type": "string"
+																},
+																"subscribeToEmail": {
+																	"type": "string"
+																},
+																"logoutTime": {
+																	"type": "string"
+																},
+																"roleId": {
+																	"type": "integer"
+																},
+																"userDuplicateId": {
+																	"type": "integer"
+																},
+																"departmentalRoles": {
+																	"type": "string"
+																},
+																"competency": {
+																	"type": "string"
+																},
+																"passwordReuseCount": {
+																	"type": "integer"
+																},
+																"isCandidateCredentialSent": {
+																	"type": "boolean"
+																}
+															}
+														},
+														"email": {
+															"type": "string"
+														},
+														"isApproved": {
+															"type": "integer"
+														}
+													}
+												},
+												"profileValidity": {
+													"type": "string"
+												},
+												"validityInDays": {
+													"type": "integer"
+												},
+												"notified": {
+													"type": "boolean"
+												},
+												"vendorAssignDate": {
+													"type": "string"
+												},
+												"groupId": {
+													"type": "string"
+												},
+												"vendorName": {
+													"type": "string"
+												}
+											}
+										}
+									},
+									"distributedChannels": {
+										"type": "array",
+										"items": {
+											"type": "string"
+										}
+									},
+									"enabledForCareerSite": {
+										"type": "boolean"
 									}
 								}
 							}
 						},
-						"users": {
-							"type": "object",
-							"properties": {
-								"1000000": {
-									"type": "object",
-									"properties": {
-										"full_name": {
-											"type": "string"
-										},
-										"photo_path": {
-											"type": "string"
-										},
-										"email_address": {
-											"type": "string"
-										},
-										"headline": {
-											"type": "string"
-										},
-										"generic": {
-											"type": "boolean"
-										},
-										"disabled": {
-											"type": "boolean"
-										},
-										"update_whitelist": {
-											"type": "array",
-											"items": {
-												"type": "string"
-											}
-										},
-										"account_id": {
-											"type": "string"
-										},
-										"id": {
-											"type": "string"
-										}
-									}
-								},
-								"2000000": {
-									"type": "object",
-									"properties": {
-										"full_name": {
-											"type": "string"
-										},
-										"photo_path": {
-											"type": "string"
-										},
-										"email_address": {
-											"type": "string"
-										},
-										"headline": {
-											"type": "string"
-										},
-										"generic": {
-											"type": "boolean"
-										},
-										"disabled": {
-											"type": "boolean"
-										},
-										"update_whitelist": {
-											"type": "array",
-											"items": {
-												"type": "string"
-											}
-										},
-										"account_id": {
-											"type": "string"
-										},
-										"id": {
-											"type": "string"
-										}
-									}
-								}
-							}
+						"totalCount": {
+							"type": "integer"
 						},
-						"meta": {
-							"type": "object",
-							"properties": {
-								"count": {
-									"type": "integer"
-								},
-								"page_count": {
-									"type": "integer"
-								},
-								"page_number": {
-									"type": "integer"
-								},
-								"page_size": {
-									"type": "integer"
-								}
-							}
+						"currentPage": {
+							"type": "integer"
+						},
+						"pageSize": {
+							"type": "integer"
 						}
 					}
 				}
@@ -838,7 +849,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/jsonProcessingDataflow')]",
+			"name": "[concat(parameters('factoryName'), '/jsonProcessingDF')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -847,7 +858,7 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "json_ds",
+								"referenceName": "jsonds",
 								"type": "DatasetReference"
 							},
 							"name": "datasource"
@@ -856,7 +867,7 @@
 					"sinks": [
 						{
 							"dataset": {
-								"referenceName": "dataflowAzureSqlTabl",
+								"referenceName": "dataflowAzureSqlTable",
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
@@ -875,10 +886,10 @@
 					],
 					"scriptLines": [
 						"source(output(",
-						"          currentPage as boolean,",
-						"          data as (companyId as short, createdDate as string, deptFullCode as string, designation as string, desiredSkill as string, distributedChannels as string[], employeeJobDistribution as string, enabledForCareerSite as boolean, endtDate as string, id as short, jobCode as short, jobTitle as string, jobUrl as string, jobVisibiltyLevel as string, location as string, maxJobSalary as string, maxYrsOfExperience as string, minJobSalary as string, minYrsOfExperience as string, modifiedDate as string, positionsReq as boolean, privateJobShare as boolean, qualification as string, role as string, skillSet as string, skillsToEvaluate as string, startDate as string, status as boolean, vendorJobDistribution as (groupId as string, id as boolean, jobId as boolean, notified as boolean, profileValidity as string, userId as boolean, validityInDays as boolean, vendor as (added_date as string, companyId as boolean, creditConfig as string, email as string, endDate as string, id as boolean, isActive as boolean, isApproved as boolean, lastLoggedIn as string, partnerName as string, reason as string, sourceValidityConfigurationId as string, startDate as string, user as (companyId as boolean, competency as string, departmentalRoles as string, emailId as string, employeeId as string, id as boolean, isCandidateCredentialSent as boolean, isInterviewCredentialSent as string, issuperuser as boolean, linkedInProfile as string, logoutTime as string, modifiedByUserId as boolean, passwordReuseCount as boolean, phoneNo as string, roleId as boolean, status as boolean, subscribeToEmail as string, userDuplicateId as boolean, username as string, uuid as string), userId as boolean, vendorStatus as boolean), vendorAssignDate as string, vendorId as boolean, vendorName as string)[])[],",
-						"          pageSize as short,",
-						"          totalCount as short",
+						"          data as (id as integer, jobCode as integer, jobTitle as string, jobUrl as string, role as string, location as string, maxYrsOfExperience as string, minYrsOfExperience as string, skillSet as string, skillsToEvaluate as string, desiredSkill as string, designation as string, positionsReq as string, minJobSalary as string, maxJobSalary as string, qualification as string, companyId as integer, createdDate as string, modifiedDate as string, deptFullCode as string, startDate as string, endtDate as string, status as integer, privateJobShare as string, jobVisibiltyLevel as string, employeeJobDistribution as string, vendorJobDistribution as (id as integer, jobId as integer, userId as integer, vendorId as integer, vendor as (id as integer, partnerName as string, userId as integer, companyId as integer, isActive as integer, added_date as string, lastLoggedIn as string, reason as string, vendorStatus as integer, sourceValidityConfigurationId as string, creditConfig as string, startDate as string, endDate as string, user as (id as integer, uuid as string, username as string, emailId as string, employeeId as string, phoneNo as string, linkedInProfile as string, modifiedByUserId as integer, status as integer, issuperuser as integer, companyId as integer, isInterviewCredentialSent as string, subscribeToEmail as string, logoutTime as string, roleId as integer, userDuplicateId as integer, departmentalRoles as string, competency as string, passwordReuseCount as integer, isCandidateCredentialSent as boolean), email as string, isApproved as integer), profileValidity as string, validityInDays as integer, notified as boolean, vendorAssignDate as string, groupId as string, vendorName as string)[], distributedChannels as string[], enabledForCareerSite as boolean)[],",
+						"          totalCount as integer,",
+						"          currentPage as integer,",
+						"          pageSize as integer",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
@@ -942,8 +953,8 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/json_ds')]",
-				"[concat(variables('factoryId'), '/datasets/dataflowAzureSqlTabl')]"
+				"[concat(variables('factoryId'), '/datasets/jsonds')]",
+				"[concat(variables('factoryId'), '/datasets/dataflowAzureSqlTable')]"
 			]
 		}
 	]
