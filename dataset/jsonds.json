@@ -17,114 +17,262 @@
 		"schema": {
 			"type": "object",
 			"properties": {
-				"count": {
-					"type": "integer"
-				},
-				"results": {
+				"data": {
 					"type": "array",
 					"items": {
 						"type": "object",
 						"properties": {
-							"key": {
+							"id": {
+								"type": "integer"
+							},
+							"jobCode": {
+								"type": "integer"
+							},
+							"jobTitle": {
 								"type": "string"
 							},
-							"id": {
+							"jobUrl": {
 								"type": "string"
+							},
+							"role": {
+								"type": "null"
+							},
+							"location": {
+								"type": "string"
+							},
+							"maxYrsOfExperience": {
+								"type": "null"
+							},
+							"minYrsOfExperience": {
+								"type": "null"
+							},
+							"skillSet": {
+								"type": "string"
+							},
+							"skillsToEvaluate": {
+								"type": "string"
+							},
+							"desiredSkill": {
+								"type": "string"
+							},
+							"designation": {
+								"type": "null"
+							},
+							"positionsReq": {
+								"type": "string"
+							},
+							"minJobSalary": {
+								"type": "null"
+							},
+							"maxJobSalary": {
+								"type": "null"
+							},
+							"qualification": {
+								"type": "null"
+							},
+							"companyId": {
+								"type": "integer"
+							},
+							"createdDate": {
+								"type": "string"
+							},
+							"modifiedDate": {
+								"type": "string"
+							},
+							"deptFullCode": {
+								"type": "string"
+							},
+							"startDate": {
+								"type": "null"
+							},
+							"endtDate": {
+								"type": "null"
+							},
+							"status": {
+								"type": "integer"
+							},
+							"privateJobShare": {
+								"type": "string"
+							},
+							"jobVisibiltyLevel": {
+								"type": "string"
+							},
+							"employeeJobDistribution": {
+								"type": "null"
+							},
+							"vendorJobDistribution": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "integer"
+										},
+										"jobId": {
+											"type": "integer"
+										},
+										"userId": {
+											"type": "integer"
+										},
+										"vendorId": {
+											"type": "integer"
+										},
+										"vendor": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"partnerName": {
+													"type": "string"
+												},
+												"userId": {
+													"type": "integer"
+												},
+												"companyId": {
+													"type": "integer"
+												},
+												"isActive": {
+													"type": "integer"
+												},
+												"added_date": {
+													"type": "string"
+												},
+												"lastLoggedIn": {
+													"type": "string"
+												},
+												"reason": {
+													"type": "string"
+												},
+												"vendorStatus": {
+													"type": "integer"
+												},
+												"sourceValidityConfigurationId": {
+													"type": "string"
+												},
+												"creditConfig": {
+													"type": "string"
+												},
+												"startDate": {
+													"type": "string"
+												},
+												"endDate": {
+													"type": "string"
+												},
+												"user": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "integer"
+														},
+														"uuid": {
+															"type": "string"
+														},
+														"username": {
+															"type": "string"
+														},
+														"emailId": {
+															"type": "string"
+														},
+														"employeeId": {
+															"type": "string"
+														},
+														"phoneNo": {
+															"type": "string"
+														},
+														"linkedInProfile": {
+															"type": "string"
+														},
+														"modifiedByUserId": {
+															"type": "integer"
+														},
+														"status": {
+															"type": "integer"
+														},
+														"issuperuser": {
+															"type": "integer"
+														},
+														"companyId": {
+															"type": "integer"
+														},
+														"isInterviewCredentialSent": {
+															"type": "string"
+														},
+														"subscribeToEmail": {
+															"type": "string"
+														},
+														"logoutTime": {
+															"type": "string"
+														},
+														"roleId": {
+															"type": "integer"
+														},
+														"userDuplicateId": {
+															"type": "integer"
+														},
+														"departmentalRoles": {
+															"type": "string"
+														},
+														"competency": {
+															"type": "string"
+														},
+														"passwordReuseCount": {
+															"type": "integer"
+														},
+														"isCandidateCredentialSent": {
+															"type": "boolean"
+														}
+													}
+												},
+												"email": {
+													"type": "string"
+												},
+												"isApproved": {
+													"type": "integer"
+												}
+											}
+										},
+										"profileValidity": {
+											"type": "string"
+										},
+										"validityInDays": {
+											"type": "integer"
+										},
+										"notified": {
+											"type": "boolean"
+										},
+										"vendorAssignDate": {
+											"type": "string"
+										},
+										"groupId": {
+											"type": "string"
+										},
+										"vendorName": {
+											"type": "string"
+										}
+									}
+								}
+							},
+							"distributedChannels": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"enabledForCareerSite": {
+								"type": "boolean"
 							}
 						}
 					}
 				},
-				"users": {
-					"type": "object",
-					"properties": {
-						"1000000": {
-							"type": "object",
-							"properties": {
-								"full_name": {
-									"type": "string"
-								},
-								"photo_path": {
-									"type": "string"
-								},
-								"email_address": {
-									"type": "string"
-								},
-								"headline": {
-									"type": "string"
-								},
-								"generic": {
-									"type": "boolean"
-								},
-								"disabled": {
-									"type": "boolean"
-								},
-								"update_whitelist": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									}
-								},
-								"account_id": {
-									"type": "string"
-								},
-								"id": {
-									"type": "string"
-								}
-							}
-						},
-						"2000000": {
-							"type": "object",
-							"properties": {
-								"full_name": {
-									"type": "string"
-								},
-								"photo_path": {
-									"type": "string"
-								},
-								"email_address": {
-									"type": "string"
-								},
-								"headline": {
-									"type": "string"
-								},
-								"generic": {
-									"type": "boolean"
-								},
-								"disabled": {
-									"type": "boolean"
-								},
-								"update_whitelist": {
-									"type": "array",
-									"items": {
-										"type": "string"
-									}
-								},
-								"account_id": {
-									"type": "string"
-								},
-								"id": {
-									"type": "string"
-								}
-							}
-						}
-					}
+				"totalCount": {
+					"type": "integer"
 				},
-				"meta": {
-					"type": "object",
-					"properties": {
-						"count": {
-							"type": "integer"
-						},
-						"page_count": {
-							"type": "integer"
-						},
-						"page_number": {
-							"type": "integer"
-						},
-						"page_size": {
-							"type": "integer"
-						}
-					}
+				"currentPage": {
+					"type": "integer"
+				},
+				"pageSize": {
+					"type": "integer"
 				}
 			}
 		}
