@@ -1,0 +1,17 @@
+{
+	"name": "AzureSqldbjson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabaseLink",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "SalesLT",
+			"table": "mytestdata"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
