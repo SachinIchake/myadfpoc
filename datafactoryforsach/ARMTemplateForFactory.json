@@ -1223,17 +1223,234 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/PowerQuery')]",
+			"name": "[concat(parameters('factoryName'), '/PowerQueryPipeline')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
+				"activities": [
+					{
+						"name": "Power Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "attritionbydept",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"AzureSqlChurnTbl": {},
+									"UserQueryCSVFile": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQueryCSVFile",
+											"dataset": {
+												"referenceName": "CSVFile",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tAge as string,\n\t\tAttrition as string,\n\t\tBusinessTravel as string,\n\t\tDailyRate as string,\n\t\tDepartment as string,\n\t\tDistanceFromHome as string,\n\t\tEducation as string,\n\t\tEducationField as string,\n\t\tEmployeeCount as string,\n\t\tEmployeeNumber as string,\n\t\tEnvironmentSatisfaction as string,\n\t\tGender as string,\n\t\tHourlyRate as string,\n\t\tJobInvolvement as string,\n\t\tJobLevel as string,\n\t\tJobRole as string,\n\t\tJobSatisfaction as string,\n\t\tMaritalStatus as string,\n\t\tMonthlyIncome as string,\n\t\tMonthlyRate as string,\n\t\tNumCompaniesWorked as string,\n\t\tOver18 as string,\n\t\tOverTime as string,\n\t\tPercentSalaryHike as string,\n\t\tPerformanceRating as string,\n\t\tRelationshipSatisfaction as string,\n\t\tStandardHours as string,\n\t\tStockOptionLevel as string,\n\t\tTotalWorkingYears as string,\n\t\tTrainingTimesLastYear as string,\n\t\tWorkLifeBalance as string,\n\t\tYearsAtCompany as string,\n\t\tYearsInCurrentRole as string,\n\t\tYearsSinceLastPromotion as string,\n\t\tYearsWithCurrManager as string\n\t),\n\tpartitionFileNames:['churndeptwise.csv'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQueryCSVFile"
+										}
+									]
+								}
+							]
+						}
+					}
+				],
 				"policy": {
 					"elapsedTimeMetric": {},
 					"cancelAfter": {}
 				},
 				"annotations": []
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/attritionbydept')]",
+				"[concat(variables('factoryId'), '/datasets/CSVFile')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CSVFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "stogage_gen2_link",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "structureddata"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Age",
+						"type": "String"
+					},
+					{
+						"name": "Attrition",
+						"type": "String"
+					},
+					{
+						"name": "BusinessTravel",
+						"type": "String"
+					},
+					{
+						"name": "DailyRate",
+						"type": "String"
+					},
+					{
+						"name": "Department",
+						"type": "String"
+					},
+					{
+						"name": "DistanceFromHome",
+						"type": "String"
+					},
+					{
+						"name": "Education",
+						"type": "String"
+					},
+					{
+						"name": "EducationField",
+						"type": "String"
+					},
+					{
+						"name": "EmployeeCount",
+						"type": "String"
+					},
+					{
+						"name": "EmployeeNumber",
+						"type": "String"
+					},
+					{
+						"name": "EnvironmentSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
+						"type": "String"
+					},
+					{
+						"name": "HourlyRate",
+						"type": "String"
+					},
+					{
+						"name": "JobInvolvement",
+						"type": "String"
+					},
+					{
+						"name": "JobLevel",
+						"type": "String"
+					},
+					{
+						"name": "JobRole",
+						"type": "String"
+					},
+					{
+						"name": "JobSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "MaritalStatus",
+						"type": "String"
+					},
+					{
+						"name": "MonthlyIncome",
+						"type": "String"
+					},
+					{
+						"name": "MonthlyRate",
+						"type": "String"
+					},
+					{
+						"name": "NumCompaniesWorked",
+						"type": "String"
+					},
+					{
+						"name": "Over18",
+						"type": "String"
+					},
+					{
+						"name": "OverTime",
+						"type": "String"
+					},
+					{
+						"name": "PercentSalaryHike",
+						"type": "String"
+					},
+					{
+						"name": "PerformanceRating",
+						"type": "String"
+					},
+					{
+						"name": "RelationshipSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "StandardHours",
+						"type": "String"
+					},
+					{
+						"name": "StockOptionLevel",
+						"type": "String"
+					},
+					{
+						"name": "TotalWorkingYears",
+						"type": "String"
+					},
+					{
+						"name": "TrainingTimesLastYear",
+						"type": "String"
+					},
+					{
+						"name": "WorkLifeBalance",
+						"type": "String"
+					},
+					{
+						"name": "YearsAtCompany",
+						"type": "String"
+					},
+					{
+						"name": "YearsInCurrentRole",
+						"type": "String"
+					},
+					{
+						"name": "YearsSinceLastPromotion",
+						"type": "String"
+					},
+					{
+						"name": "YearsWithCurrManager",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/stogage_gen2_link')]"
+			]
 		}
 	]
 }
