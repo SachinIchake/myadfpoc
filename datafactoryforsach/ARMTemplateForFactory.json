@@ -7,13 +7,25 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "datafactoryforsach"
 		},
+		"AzureDataLakeStorageLink_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorageLink'"
+		},
 		"AzureSqlDatabaseLink_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseLink'"
 		},
+		"AzureSqlDatabaseforPOC_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseforPOC'"
+		},
 		"stogage_gen2_link_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'stogage_gen2_link'"
+		},
+		"AzureDataLakeStorageLink_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mystorageactforsachin.dfs.core.windows.net/"
 		},
 		"stogage_gen2_link_properties_typeProperties_url": {
 			"type": "string",
@@ -24,6 +36,68 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/PowerQueryPipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Power Query",
+						"type": "ExecuteWranglingDataflow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "attritionbydept",
+								"type": "DataFlowReference",
+								"datasetParameters": {
+									"AzureSqlChurnTbl": {},
+									"UserQueryCSVFile": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"queries": [
+								{
+									"queryName": "UserQuery",
+									"dataflowSinks": [
+										{
+											"name": "UserQueryCSVFile",
+											"dataset": {
+												"referenceName": "CSVFile",
+												"type": "DatasetReference",
+												"parameters": {}
+											},
+											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tAge as string,\n\t\tAttrition as string,\n\t\tBusinessTravel as string,\n\t\tDailyRate as string,\n\t\tDepartment as string,\n\t\tDistanceFromHome as string,\n\t\tEducation as string,\n\t\tEducationField as string,\n\t\tEmployeeCount as string,\n\t\tEmployeeNumber as string,\n\t\tEnvironmentSatisfaction as string,\n\t\tGender as string,\n\t\tHourlyRate as string,\n\t\tJobInvolvement as string,\n\t\tJobLevel as string,\n\t\tJobRole as string,\n\t\tJobSatisfaction as string,\n\t\tMaritalStatus as string,\n\t\tMonthlyIncome as string,\n\t\tMonthlyRate as string,\n\t\tNumCompaniesWorked as string,\n\t\tOver18 as string,\n\t\tOverTime as string,\n\t\tPercentSalaryHike as string,\n\t\tPerformanceRating as string,\n\t\tRelationshipSatisfaction as string,\n\t\tStandardHours as string,\n\t\tStockOptionLevel as string,\n\t\tTotalWorkingYears as string,\n\t\tTrainingTimesLastYear as string,\n\t\tWorkLifeBalance as string,\n\t\tYearsAtCompany as string,\n\t\tYearsInCurrentRole as string,\n\t\tYearsSinceLastPromotion as string,\n\t\tYearsWithCurrManager as string\n\t),\n\tpartitionFileNames:['churndeptwise.csv'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQueryCSVFile"
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/attritionbydept')]",
+				"[concat(variables('factoryId'), '/datasets/CSVFile')]"
+			]
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/copytosqldb')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
@@ -96,6 +170,502 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/csvds')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlChurnTbl')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/copytosqldbforpoc')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data To SQL",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 3,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Age",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Age",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Attrition",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Attrition",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "BusinessTravel",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "BusinessTravel",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DailyRate",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "DailyRate",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Department",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Department",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "DistanceFromHome",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "DistanceFromHome",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Education",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Education",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EducationField",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "EducationField",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EmployeeCount",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "EmployeeCount",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EmployeeNumber",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "EmployeeNumber",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "EnvironmentSatisfaction",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "EnvironmentSatisfaction",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Gender",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Gender",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "HourlyRate",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "HourlyRate",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "JobInvolvement",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "JobInvolvement",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "JobLevel",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "JobLevel",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "JobRole",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "JobRole",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "JobSatisfaction",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "JobSatisfaction",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MaritalStatus",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "MaritalStatus",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MonthlyIncome",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "MonthlyIncome",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "MonthlyRate",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "MonthlyRate",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "NumCompaniesWorked",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "NumCompaniesWorked",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Over18",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "Over18",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "OverTime",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "OverTime",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PercentSalaryHike",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "PercentSalaryHike",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "PerformanceRating",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "PerformanceRating",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "RelationshipSatisfaction",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "RelationshipSatisfaction",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "StandardHours",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "StandardHours",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "StockOptionLevel",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "StockOptionLevel",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TotalWorkingYears",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TotalWorkingYears",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "TrainingTimesLastYear",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "TrainingTimesLastYear",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "WorkLifeBalance",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "WorkLifeBalance",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "YearsAtCompany",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "YearsAtCompany",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "YearsInCurrentRole",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "YearsInCurrentRole",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "YearsSinceLastPromotion",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "YearsSinceLastPromotion",
+											"type": "String",
+											"physicalType": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "YearsWithCurrManager",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "YearsWithCurrManager",
+											"type": "String",
+											"physicalType": "String"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "CSVForPOC",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CSVForPOC')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
 			]
 		},
 		{
@@ -464,6 +1034,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabaseforPOC",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "pocchurntbl"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseforPOC')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqldbjson')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -536,6 +1127,343 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabaseLink')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CSVFile')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "stogage_gen2_link",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "structureddata"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Age",
+						"type": "String"
+					},
+					{
+						"name": "Attrition",
+						"type": "String"
+					},
+					{
+						"name": "BusinessTravel",
+						"type": "String"
+					},
+					{
+						"name": "DailyRate",
+						"type": "String"
+					},
+					{
+						"name": "Department",
+						"type": "String"
+					},
+					{
+						"name": "DistanceFromHome",
+						"type": "String"
+					},
+					{
+						"name": "Education",
+						"type": "String"
+					},
+					{
+						"name": "EducationField",
+						"type": "String"
+					},
+					{
+						"name": "EmployeeCount",
+						"type": "String"
+					},
+					{
+						"name": "EmployeeNumber",
+						"type": "String"
+					},
+					{
+						"name": "EnvironmentSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
+						"type": "String"
+					},
+					{
+						"name": "HourlyRate",
+						"type": "String"
+					},
+					{
+						"name": "JobInvolvement",
+						"type": "String"
+					},
+					{
+						"name": "JobLevel",
+						"type": "String"
+					},
+					{
+						"name": "JobRole",
+						"type": "String"
+					},
+					{
+						"name": "JobSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "MaritalStatus",
+						"type": "String"
+					},
+					{
+						"name": "MonthlyIncome",
+						"type": "String"
+					},
+					{
+						"name": "MonthlyRate",
+						"type": "String"
+					},
+					{
+						"name": "NumCompaniesWorked",
+						"type": "String"
+					},
+					{
+						"name": "Over18",
+						"type": "String"
+					},
+					{
+						"name": "OverTime",
+						"type": "String"
+					},
+					{
+						"name": "PercentSalaryHike",
+						"type": "String"
+					},
+					{
+						"name": "PerformanceRating",
+						"type": "String"
+					},
+					{
+						"name": "RelationshipSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "StandardHours",
+						"type": "String"
+					},
+					{
+						"name": "StockOptionLevel",
+						"type": "String"
+					},
+					{
+						"name": "TotalWorkingYears",
+						"type": "String"
+					},
+					{
+						"name": "TrainingTimesLastYear",
+						"type": "String"
+					},
+					{
+						"name": "WorkLifeBalance",
+						"type": "String"
+					},
+					{
+						"name": "YearsAtCompany",
+						"type": "String"
+					},
+					{
+						"name": "YearsInCurrentRole",
+						"type": "String"
+					},
+					{
+						"name": "YearsSinceLastPromotion",
+						"type": "String"
+					},
+					{
+						"name": "YearsWithCurrManager",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/stogage_gen2_link')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CSVForPOC')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureDataLakeStorageLink",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileName": "HR-Employee-Attrition.csv",
+						"fileSystem": "structureddata"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Age",
+						"type": "String"
+					},
+					{
+						"name": "Attrition",
+						"type": "String"
+					},
+					{
+						"name": "BusinessTravel",
+						"type": "String"
+					},
+					{
+						"name": "DailyRate",
+						"type": "String"
+					},
+					{
+						"name": "Department",
+						"type": "String"
+					},
+					{
+						"name": "DistanceFromHome",
+						"type": "String"
+					},
+					{
+						"name": "Education",
+						"type": "String"
+					},
+					{
+						"name": "EducationField",
+						"type": "String"
+					},
+					{
+						"name": "EmployeeCount",
+						"type": "String"
+					},
+					{
+						"name": "EmployeeNumber",
+						"type": "String"
+					},
+					{
+						"name": "EnvironmentSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "Gender",
+						"type": "String"
+					},
+					{
+						"name": "HourlyRate",
+						"type": "String"
+					},
+					{
+						"name": "JobInvolvement",
+						"type": "String"
+					},
+					{
+						"name": "JobLevel",
+						"type": "String"
+					},
+					{
+						"name": "JobRole",
+						"type": "String"
+					},
+					{
+						"name": "JobSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "MaritalStatus",
+						"type": "String"
+					},
+					{
+						"name": "MonthlyIncome",
+						"type": "String"
+					},
+					{
+						"name": "MonthlyRate",
+						"type": "String"
+					},
+					{
+						"name": "NumCompaniesWorked",
+						"type": "String"
+					},
+					{
+						"name": "Over18",
+						"type": "String"
+					},
+					{
+						"name": "OverTime",
+						"type": "String"
+					},
+					{
+						"name": "PercentSalaryHike",
+						"type": "String"
+					},
+					{
+						"name": "PerformanceRating",
+						"type": "String"
+					},
+					{
+						"name": "RelationshipSatisfaction",
+						"type": "String"
+					},
+					{
+						"name": "StandardHours",
+						"type": "String"
+					},
+					{
+						"name": "StockOptionLevel",
+						"type": "String"
+					},
+					{
+						"name": "TotalWorkingYears",
+						"type": "String"
+					},
+					{
+						"name": "TrainingTimesLastYear",
+						"type": "String"
+					},
+					{
+						"name": "WorkLifeBalance",
+						"type": "String"
+					},
+					{
+						"name": "YearsAtCompany",
+						"type": "String"
+					},
+					{
+						"name": "YearsInCurrentRole",
+						"type": "String"
+					},
+					{
+						"name": "YearsSinceLastPromotion",
+						"type": "String"
+					},
+					{
+						"name": "YearsWithCurrManager",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureDataLakeStorageLink')]"
 			]
 		},
 		{
@@ -1049,6 +1977,23 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataLakeStorageLink')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorageLink_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorageLink_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseLink')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -1057,6 +2002,19 @@
 				"type": "AzureSqlDatabase",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureSqlDatabaseLink_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabaseforPOC')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSqlDatabaseforPOC_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -1077,6 +2035,31 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/attritionbydept')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "AzureSqlChurnTbl",
+							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> AzureSqlChurnTbl",
+							"dataset": {
+								"referenceName": "AzureSqlChurnTbl",
+								"type": "DatasetReference"
+							}
+						}
+					],
+					"script": "section Section1;\r\nshared AzureSqlChurnTbl = let AdfDoc = Sql.Database(\"mysqlserverforsachin.database.windows.net\", \"mysqldbfo\", [CreateNavigationProperties = false]), InputTable = AdfDoc{[Schema=\"SalesLT\",Item=\"customerchurn\"]}[Data] in InputTable;\r\nshared UserQuery = let Source = #\"AzureSqlChurnTbl\",\r\n  #\"Changed column type\" = Table.TransformColumnTypes(Source, {{\"Age\", type number}}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"Age\", Int64.Type}, {\"Attrition\", type text}, {\"BusinessTravel\", type text}, {\"DailyRate\", Int64.Type}, {\"Department\", type text}, {\"DistanceFromHome\", Int64.Type}, {\"Education\", Int64.Type}, {\"EducationField\", type text}, {\"EmployeeCount\", Int64.Type}, {\"EmployeeNumber\", Int64.Type}, {\"EnvironmentSatisfaction\", Int64.Type}, {\"Gender\", type text}, {\"HourlyRate\", Int64.Type}, {\"JobInvolvement\", Int64.Type}, {\"JobLevel\", Int64.Type}, {\"JobRole\", type text}, {\"JobSatisfaction\", Int64.Type}, {\"MaritalStatus\", type text}, {\"MonthlyIncome\", Int64.Type}, {\"MonthlyRate\", Int64.Type}, {\"NumCompaniesWorked\", Int64.Type}, {\"Over18\", type text}, {\"OverTime\", type text}, {\"PercentSalaryHike\", Int64.Type}, {\"PerformanceRating\", Int64.Type}, {\"RelationshipSatisfaction\", Int64.Type}, {\"StandardHours\", Int64.Type}, {\"StockOptionLevel\", Int64.Type}, {\"TotalWorkingYears\", Int64.Type}, {\"TrainingTimesLastYear\", Int64.Type}, {\"WorkLifeBalance\", Int64.Type}, {\"YearsAtCompany\", Int64.Type}, {\"YearsInCurrentRole\", Int64.Type}, {\"YearsSinceLastPromotion\", Int64.Type}, {\"YearsWithCurrManager\", Int64.Type}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type 1\", \"Yes\", \"1\", Replacer.ReplaceText, {\"Attrition\"}),\r\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value\", \"No\", \"0\", Replacer.ReplaceText, {\"Attrition\"}),\r\n  #\"Changed column type 2\" = Table.TransformColumnTypes(#\"Replaced value 1\", {{\"Attrition\", type number}}),\r\n  #\"Grouped rows\" = Table.Group(#\"Changed column type 2\", {\"Department\", \"Attrition\"}, {{\"Count\", each Table.RowCount(_), Int64.Type}}) in #\"Grouped rows\";\r\n",
+					"documentLocale": "en-us"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlChurnTbl')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/jsonProcessingDF')]",
@@ -1195,261 +2178,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/jsonds')]",
 				"[concat(variables('factoryId'), '/datasets/dataflowAzureSqlTable')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/attritionbydept')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "WranglingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"name": "AzureSqlChurnTbl",
-							"script": "source(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~>  AzureSqlChurnTbl",
-							"dataset": {
-								"referenceName": "AzureSqlChurnTbl",
-								"type": "DatasetReference"
-							}
-						}
-					],
-					"script": "section Section1;\r\nshared AzureSqlChurnTbl = let AdfDoc = Sql.Database(\"mysqlserverforsachin.database.windows.net\", \"mysqldbfo\", [CreateNavigationProperties = false]), InputTable = AdfDoc{[Schema=\"SalesLT\",Item=\"customerchurn\"]}[Data] in InputTable;\r\nshared UserQuery = let Source = #\"AzureSqlChurnTbl\",\r\n  #\"Changed column type\" = Table.TransformColumnTypes(Source, {{\"Age\", type number}}),\r\n  #\"Changed column type 1\" = Table.TransformColumnTypes(#\"Changed column type\", {{\"Age\", Int64.Type}, {\"Attrition\", type text}, {\"BusinessTravel\", type text}, {\"DailyRate\", Int64.Type}, {\"Department\", type text}, {\"DistanceFromHome\", Int64.Type}, {\"Education\", Int64.Type}, {\"EducationField\", type text}, {\"EmployeeCount\", Int64.Type}, {\"EmployeeNumber\", Int64.Type}, {\"EnvironmentSatisfaction\", Int64.Type}, {\"Gender\", type text}, {\"HourlyRate\", Int64.Type}, {\"JobInvolvement\", Int64.Type}, {\"JobLevel\", Int64.Type}, {\"JobRole\", type text}, {\"JobSatisfaction\", Int64.Type}, {\"MaritalStatus\", type text}, {\"MonthlyIncome\", Int64.Type}, {\"MonthlyRate\", Int64.Type}, {\"NumCompaniesWorked\", Int64.Type}, {\"Over18\", type text}, {\"OverTime\", type text}, {\"PercentSalaryHike\", Int64.Type}, {\"PerformanceRating\", Int64.Type}, {\"RelationshipSatisfaction\", Int64.Type}, {\"StandardHours\", Int64.Type}, {\"StockOptionLevel\", Int64.Type}, {\"TotalWorkingYears\", Int64.Type}, {\"TrainingTimesLastYear\", Int64.Type}, {\"WorkLifeBalance\", Int64.Type}, {\"YearsAtCompany\", Int64.Type}, {\"YearsInCurrentRole\", Int64.Type}, {\"YearsSinceLastPromotion\", Int64.Type}, {\"YearsWithCurrManager\", Int64.Type}}),\r\n  #\"Replaced value\" = Table.ReplaceValue(#\"Changed column type 1\", \"Yes\", \"1\", Replacer.ReplaceText, {\"Attrition\"}),\r\n  #\"Replaced value 1\" = Table.ReplaceValue(#\"Replaced value\", \"No\", \"0\", Replacer.ReplaceText, {\"Attrition\"}),\r\n  #\"Changed column type 2\" = Table.TransformColumnTypes(#\"Replaced value 1\", {{\"Attrition\", type number}}),\r\n  #\"Grouped rows\" = Table.Group(#\"Changed column type 2\", {\"Department\", \"Attrition\"}, {{\"Count\", each Table.RowCount(_), Int64.Type}}) in #\"Grouped rows\";\r\n",
-					"documentLocale": "en-us"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AzureSqlChurnTbl')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/PowerQueryPipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "Power Query",
-						"type": "ExecuteWranglingDataflow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "attritionbydept",
-								"type": "DataFlowReference",
-								"datasetParameters": {
-									"AzureSqlChurnTbl": {},
-									"UserQueryCSVFile": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"queries": [
-								{
-									"queryName": "UserQuery",
-									"dataflowSinks": [
-										{
-											"name": "UserQueryCSVFile",
-											"dataset": {
-												"referenceName": "CSVFile",
-												"type": "DatasetReference",
-												"parameters": {}
-											},
-											"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tAge as string,\n\t\tAttrition as string,\n\t\tBusinessTravel as string,\n\t\tDailyRate as string,\n\t\tDepartment as string,\n\t\tDistanceFromHome as string,\n\t\tEducation as string,\n\t\tEducationField as string,\n\t\tEmployeeCount as string,\n\t\tEmployeeNumber as string,\n\t\tEnvironmentSatisfaction as string,\n\t\tGender as string,\n\t\tHourlyRate as string,\n\t\tJobInvolvement as string,\n\t\tJobLevel as string,\n\t\tJobRole as string,\n\t\tJobSatisfaction as string,\n\t\tMaritalStatus as string,\n\t\tMonthlyIncome as string,\n\t\tMonthlyRate as string,\n\t\tNumCompaniesWorked as string,\n\t\tOver18 as string,\n\t\tOverTime as string,\n\t\tPercentSalaryHike as string,\n\t\tPerformanceRating as string,\n\t\tRelationshipSatisfaction as string,\n\t\tStandardHours as string,\n\t\tStockOptionLevel as string,\n\t\tTotalWorkingYears as string,\n\t\tTrainingTimesLastYear as string,\n\t\tWorkLifeBalance as string,\n\t\tYearsAtCompany as string,\n\t\tYearsInCurrentRole as string,\n\t\tYearsSinceLastPromotion as string,\n\t\tYearsWithCurrManager as string\n\t),\n\tpartitionFileNames:['churndeptwise.csv'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQueryCSVFile"
-										}
-									]
-								}
-							]
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/attritionbydept')]",
-				"[concat(variables('factoryId'), '/datasets/CSVFile')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CSVFile')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "stogage_gen2_link",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "DelimitedText",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobFSLocation",
-						"fileSystem": "structureddata"
-					},
-					"columnDelimiter": ",",
-					"escapeChar": "\\",
-					"firstRowAsHeader": true,
-					"quoteChar": "\""
-				},
-				"schema": [
-					{
-						"name": "Age",
-						"type": "String"
-					},
-					{
-						"name": "Attrition",
-						"type": "String"
-					},
-					{
-						"name": "BusinessTravel",
-						"type": "String"
-					},
-					{
-						"name": "DailyRate",
-						"type": "String"
-					},
-					{
-						"name": "Department",
-						"type": "String"
-					},
-					{
-						"name": "DistanceFromHome",
-						"type": "String"
-					},
-					{
-						"name": "Education",
-						"type": "String"
-					},
-					{
-						"name": "EducationField",
-						"type": "String"
-					},
-					{
-						"name": "EmployeeCount",
-						"type": "String"
-					},
-					{
-						"name": "EmployeeNumber",
-						"type": "String"
-					},
-					{
-						"name": "EnvironmentSatisfaction",
-						"type": "String"
-					},
-					{
-						"name": "Gender",
-						"type": "String"
-					},
-					{
-						"name": "HourlyRate",
-						"type": "String"
-					},
-					{
-						"name": "JobInvolvement",
-						"type": "String"
-					},
-					{
-						"name": "JobLevel",
-						"type": "String"
-					},
-					{
-						"name": "JobRole",
-						"type": "String"
-					},
-					{
-						"name": "JobSatisfaction",
-						"type": "String"
-					},
-					{
-						"name": "MaritalStatus",
-						"type": "String"
-					},
-					{
-						"name": "MonthlyIncome",
-						"type": "String"
-					},
-					{
-						"name": "MonthlyRate",
-						"type": "String"
-					},
-					{
-						"name": "NumCompaniesWorked",
-						"type": "String"
-					},
-					{
-						"name": "Over18",
-						"type": "String"
-					},
-					{
-						"name": "OverTime",
-						"type": "String"
-					},
-					{
-						"name": "PercentSalaryHike",
-						"type": "String"
-					},
-					{
-						"name": "PerformanceRating",
-						"type": "String"
-					},
-					{
-						"name": "RelationshipSatisfaction",
-						"type": "String"
-					},
-					{
-						"name": "StandardHours",
-						"type": "String"
-					},
-					{
-						"name": "StockOptionLevel",
-						"type": "String"
-					},
-					{
-						"name": "TotalWorkingYears",
-						"type": "String"
-					},
-					{
-						"name": "TrainingTimesLastYear",
-						"type": "String"
-					},
-					{
-						"name": "WorkLifeBalance",
-						"type": "String"
-					},
-					{
-						"name": "YearsAtCompany",
-						"type": "String"
-					},
-					{
-						"name": "YearsInCurrentRole",
-						"type": "String"
-					},
-					{
-						"name": "YearsSinceLastPromotion",
-						"type": "String"
-					},
-					{
-						"name": "YearsWithCurrManager",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/stogage_gen2_link')]"
 			]
 		}
 	]

@@ -7,13 +7,25 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "datafactoryforsach"
 		},
+		"AzureDataLakeStorageLink_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorageLink'"
+		},
 		"AzureSqlDatabaseLink_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseLink'"
 		},
+		"AzureSqlDatabaseforPOC_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabaseforPOC'"
+		},
 		"stogage_gen2_link_accountKey": {
 			"type": "secureString",
 			"metadata": "Secure string for 'accountKey' of 'stogage_gen2_link'"
+		},
+		"AzureDataLakeStorageLink_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://mystorageactforsachin.dfs.core.windows.net/"
 		},
 		"stogage_gen2_link_properties_typeProperties_url": {
 			"type": "string",
@@ -46,11 +58,20 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"AzureDataLakeStorageLink_accountKey": {
+						"value": "[parameters('AzureDataLakeStorageLink_accountKey')]"
+					},
 					"AzureSqlDatabaseLink_connectionString": {
 						"value": "[parameters('AzureSqlDatabaseLink_connectionString')]"
 					},
+					"AzureSqlDatabaseforPOC_connectionString": {
+						"value": "[parameters('AzureSqlDatabaseforPOC_connectionString')]"
+					},
 					"stogage_gen2_link_accountKey": {
 						"value": "[parameters('stogage_gen2_link_accountKey')]"
+					},
+					"AzureDataLakeStorageLink_properties_typeProperties_url": {
+						"value": "[parameters('AzureDataLakeStorageLink_properties_typeProperties_url')]"
 					},
 					"stogage_gen2_link_properties_typeProperties_url": {
 						"value": "[parameters('stogage_gen2_link_properties_typeProperties_url')]"

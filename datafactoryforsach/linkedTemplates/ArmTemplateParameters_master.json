@@ -5,11 +5,20 @@
 		"factoryName": {
 			"value": "datafactoryforsach"
 		},
+		"AzureDataLakeStorageLink_accountKey": {
+			"value": ""
+		},
 		"AzureSqlDatabaseLink_connectionString": {
+			"value": ""
+		},
+		"AzureSqlDatabaseforPOC_connectionString": {
 			"value": ""
 		},
 		"stogage_gen2_link_accountKey": {
 			"value": ""
+		},
+		"AzureDataLakeStorageLink_properties_typeProperties_url": {
+			"value": "https://mystorageactforsachin.dfs.core.windows.net/"
 		},
 		"stogage_gen2_link_properties_typeProperties_url": {
 			"value": "https://mystorageactforsachin.dfs.core.windows.net/"
