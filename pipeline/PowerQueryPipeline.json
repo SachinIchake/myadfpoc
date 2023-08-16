@@ -1,0 +1,46 @@
+{
+	"name": "PowerQueryPipeline",
+	"properties": {
+		"activities": [
+			{
+				"name": "Power Query",
+				"type": "ExecuteWranglingDataflow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "attritionbydept",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"queries": [
+						{
+							"queryName": "UserQuery",
+							"dataflowSinks": [
+								{
+									"name": "UserQueryCSVFile",
+									"dataset": {
+										"referenceName": "CSVFile",
+										"type": "DatasetReference"
+									},
+									"script": "sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tinput(\n\t\tAge as string,\n\t\tAttrition as string,\n\t\tBusinessTravel as string,\n\t\tDailyRate as string,\n\t\tDepartment as string,\n\t\tDistanceFromHome as string,\n\t\tEducation as string,\n\t\tEducationField as string,\n\t\tEmployeeCount as string,\n\t\tEmployeeNumber as string,\n\t\tEnvironmentSatisfaction as string,\n\t\tGender as string,\n\t\tHourlyRate as string,\n\t\tJobInvolvement as string,\n\t\tJobLevel as string,\n\t\tJobRole as string,\n\t\tJobSatisfaction as string,\n\t\tMaritalStatus as string,\n\t\tMonthlyIncome as string,\n\t\tMonthlyRate as string,\n\t\tNumCompaniesWorked as string,\n\t\tOver18 as string,\n\t\tOverTime as string,\n\t\tPercentSalaryHike as string,\n\t\tPerformanceRating as string,\n\t\tRelationshipSatisfaction as string,\n\t\tStandardHours as string,\n\t\tStockOptionLevel as string,\n\t\tTotalWorkingYears as string,\n\t\tTrainingTimesLastYear as string,\n\t\tWorkLifeBalance as string,\n\t\tYearsAtCompany as string,\n\t\tYearsInCurrentRole as string,\n\t\tYearsSinceLastPromotion as string,\n\t\tYearsWithCurrManager as string\n\t),\n\tpartitionFileNames:['churndeptwise.csv'],\n\tumask: 0022,\n\tpreCommands: [],\n\tpostCommands: [],\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tpartitionBy('hash', 1)) ~> UserQueryCSVFile"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"annotations": []
+	}
+}
