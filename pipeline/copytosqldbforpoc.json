@@ -1,0 +1,484 @@
+{
+	"name": "copytosqldbforpoc",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data To SQL",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "Age",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Age",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Attrition",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Attrition",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "BusinessTravel",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "BusinessTravel",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DailyRate",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DailyRate",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Department",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Department",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DistanceFromHome",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DistanceFromHome",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Education",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Education",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EducationField",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EducationField",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EmployeeCount",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EmployeeCount",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EmployeeNumber",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EmployeeNumber",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "EnvironmentSatisfaction",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "EnvironmentSatisfaction",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Gender",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Gender",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "HourlyRate",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "HourlyRate",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "JobInvolvement",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "JobInvolvement",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "JobLevel",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "JobLevel",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "JobRole",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "JobRole",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "JobSatisfaction",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "JobSatisfaction",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MaritalStatus",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "MaritalStatus",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MonthlyIncome",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "MonthlyIncome",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "MonthlyRate",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "MonthlyRate",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NumCompaniesWorked",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NumCompaniesWorked",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Over18",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "Over18",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "OverTime",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "OverTime",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PercentSalaryHike",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PercentSalaryHike",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "PerformanceRating",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "PerformanceRating",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RelationshipSatisfaction",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "RelationshipSatisfaction",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "StandardHours",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "StandardHours",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "StockOptionLevel",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "StockOptionLevel",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TotalWorkingYears",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TotalWorkingYears",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TrainingTimesLastYear",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "TrainingTimesLastYear",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "WorkLifeBalance",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "WorkLifeBalance",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "YearsAtCompany",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "YearsAtCompany",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "YearsInCurrentRole",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "YearsInCurrentRole",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "YearsSinceLastPromotion",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "YearsSinceLastPromotion",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "YearsWithCurrManager",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "YearsWithCurrManager",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "CSVForPOC",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
