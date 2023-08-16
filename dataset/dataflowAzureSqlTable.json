@@ -7,7 +7,42 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "companyId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "location",
+				"type": "nvarchar"
+			},
+			{
+				"name": "desiredSkill",
+				"type": "nvarchar"
+			},
+			{
+				"name": "designation",
+				"type": "nvarchar"
+			},
+			{
+				"name": "vendorName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "partnerName",
+				"type": "nvarchar"
+			},
+			{
+				"name": "vendor_companyId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "distributedChannels",
+				"type": "nvarchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "SalesLT",
 			"table": "mytestdatawithdf"

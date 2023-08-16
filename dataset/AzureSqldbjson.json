@@ -7,7 +7,61 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "jobTitle",
+				"type": "nvarchar"
+			},
+			{
+				"name": "jobCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "location",
+				"type": "nvarchar"
+			},
+			{
+				"name": "skillSet",
+				"type": "nvarchar"
+			},
+			{
+				"name": "companyId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "deptFullCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "vendorJobDistribution",
+				"type": "nvarchar"
+			},
+			{
+				"name": "distributedChannels",
+				"type": "nvarchar"
+			},
+			{
+				"name": "jobId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "userId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "vendor_userId",
+				"type": "nvarchar"
+			},
+			{
+				"name": "user_uuid",
+				"type": "nvarchar"
+			},
+			{
+				"name": "value",
+				"type": "nvarchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "SalesLT",
 			"table": "mytestdata"

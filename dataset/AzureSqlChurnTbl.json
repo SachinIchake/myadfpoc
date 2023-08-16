@@ -7,7 +7,148 @@
 		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": [],
+		"schema": [
+			{
+				"name": "Age",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Attrition",
+				"type": "nvarchar"
+			},
+			{
+				"name": "BusinessTravel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DailyRate",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Department",
+				"type": "nvarchar"
+			},
+			{
+				"name": "DistanceFromHome",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Education",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EducationField",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EmployeeCount",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EmployeeNumber",
+				"type": "nvarchar"
+			},
+			{
+				"name": "EnvironmentSatisfaction",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Gender",
+				"type": "nvarchar"
+			},
+			{
+				"name": "HourlyRate",
+				"type": "nvarchar"
+			},
+			{
+				"name": "JobInvolvement",
+				"type": "nvarchar"
+			},
+			{
+				"name": "JobLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "JobRole",
+				"type": "nvarchar"
+			},
+			{
+				"name": "JobSatisfaction",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MaritalStatus",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MonthlyIncome",
+				"type": "nvarchar"
+			},
+			{
+				"name": "MonthlyRate",
+				"type": "nvarchar"
+			},
+			{
+				"name": "NumCompaniesWorked",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Over18",
+				"type": "nvarchar"
+			},
+			{
+				"name": "OverTime",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PercentSalaryHike",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PerformanceRating",
+				"type": "nvarchar"
+			},
+			{
+				"name": "RelationshipSatisfaction",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StandardHours",
+				"type": "nvarchar"
+			},
+			{
+				"name": "StockOptionLevel",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TotalWorkingYears",
+				"type": "nvarchar"
+			},
+			{
+				"name": "TrainingTimesLastYear",
+				"type": "nvarchar"
+			},
+			{
+				"name": "WorkLifeBalance",
+				"type": "nvarchar"
+			},
+			{
+				"name": "YearsAtCompany",
+				"type": "nvarchar"
+			},
+			{
+				"name": "YearsInCurrentRole",
+				"type": "nvarchar"
+			},
+			{
+				"name": "YearsSinceLastPromotion",
+				"type": "nvarchar"
+			},
+			{
+				"name": "YearsWithCurrManager",
+				"type": "nvarchar"
+			}
+		],
 		"typeProperties": {
 			"schema": "SalesLT",
 			"table": "customerchurn"
