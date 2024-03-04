@@ -1,0 +1,280 @@
+{
+	"name": "Json1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureDataLakeStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "raw"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"data": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"id": {
+								"type": "integer"
+							},
+							"jobCode": {
+								"type": "integer"
+							},
+							"jobTitle": {
+								"type": "string"
+							},
+							"jobUrl": {
+								"type": "string"
+							},
+							"role": {
+								"type": "null"
+							},
+							"location": {
+								"type": "string"
+							},
+							"maxYrsOfExperience": {
+								"type": "null"
+							},
+							"minYrsOfExperience": {
+								"type": "null"
+							},
+							"skillSet": {
+								"type": "string"
+							},
+							"skillsToEvaluate": {
+								"type": "string"
+							},
+							"desiredSkill": {
+								"type": "string"
+							},
+							"designation": {
+								"type": "null"
+							},
+							"positionsReq": {
+								"type": "string"
+							},
+							"minJobSalary": {
+								"type": "null"
+							},
+							"maxJobSalary": {
+								"type": "null"
+							},
+							"qualification": {
+								"type": "null"
+							},
+							"companyId": {
+								"type": "integer"
+							},
+							"createdDate": {
+								"type": "string"
+							},
+							"modifiedDate": {
+								"type": "string"
+							},
+							"deptFullCode": {
+								"type": "string"
+							},
+							"startDate": {
+								"type": "null"
+							},
+							"endtDate": {
+								"type": "null"
+							},
+							"status": {
+								"type": "integer"
+							},
+							"privateJobShare": {
+								"type": "string"
+							},
+							"jobVisibiltyLevel": {
+								"type": "string"
+							},
+							"employeeJobDistribution": {
+								"type": "null"
+							},
+							"vendorJobDistribution": {
+								"type": "array",
+								"items": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "integer"
+										},
+										"jobId": {
+											"type": "integer"
+										},
+										"userId": {
+											"type": "integer"
+										},
+										"vendorId": {
+											"type": "integer"
+										},
+										"vendor": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"partnerName": {
+													"type": "string"
+												},
+												"userId": {
+													"type": "integer"
+												},
+												"companyId": {
+													"type": "integer"
+												},
+												"isActive": {
+													"type": "integer"
+												},
+												"added_date": {
+													"type": "string"
+												},
+												"lastLoggedIn": {
+													"type": "string"
+												},
+												"reason": {
+													"type": "string"
+												},
+												"vendorStatus": {
+													"type": "integer"
+												},
+												"sourceValidityConfigurationId": {
+													"type": "string"
+												},
+												"creditConfig": {
+													"type": "string"
+												},
+												"startDate": {
+													"type": "string"
+												},
+												"endDate": {
+													"type": "string"
+												},
+												"user": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "integer"
+														},
+														"uuid": {
+															"type": "string"
+														},
+														"username": {
+															"type": "string"
+														},
+														"emailId": {
+															"type": "string"
+														},
+														"employeeId": {
+															"type": "string"
+														},
+														"phoneNo": {
+															"type": "string"
+														},
+														"linkedInProfile": {
+															"type": "string"
+														},
+														"modifiedByUserId": {
+															"type": "integer"
+														},
+														"status": {
+															"type": "integer"
+														},
+														"issuperuser": {
+															"type": "integer"
+														},
+														"companyId": {
+															"type": "integer"
+														},
+														"isInterviewCredentialSent": {
+															"type": "string"
+														},
+														"subscribeToEmail": {
+															"type": "string"
+														},
+														"logoutTime": {
+															"type": "string"
+														},
+														"roleId": {
+															"type": "integer"
+														},
+														"userDuplicateId": {
+															"type": "integer"
+														},
+														"departmentalRoles": {
+															"type": "string"
+														},
+														"competency": {
+															"type": "string"
+														},
+														"passwordReuseCount": {
+															"type": "integer"
+														},
+														"isCandidateCredentialSent": {
+															"type": "boolean"
+														}
+													}
+												},
+												"email": {
+													"type": "string"
+												},
+												"isApproved": {
+													"type": "integer"
+												}
+											}
+										},
+										"profileValidity": {
+											"type": "string"
+										},
+										"validityInDays": {
+											"type": "integer"
+										},
+										"notified": {
+											"type": "boolean"
+										},
+										"vendorAssignDate": {
+											"type": "string"
+										},
+										"groupId": {
+											"type": "string"
+										},
+										"vendorName": {
+											"type": "string"
+										}
+									}
+								}
+							},
+							"distributedChannels": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								}
+							},
+							"enabledForCareerSite": {
+								"type": "boolean"
+							}
+						}
+					}
+				},
+				"totalCount": {
+					"type": "integer"
+				},
+				"currentPage": {
+					"type": "integer"
+				},
+				"pageSize": {
+					"type": "integer"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}
