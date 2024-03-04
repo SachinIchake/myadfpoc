@@ -92,7 +92,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "AzureSqldbjson",
+									"referenceName": "cmdsqlds",
 									"type": "DatasetReference"
 								}
 							]
@@ -125,7 +125,7 @@
 						}
 					},
 					"dataset": {
-						"referenceName": "jsonds",
+						"referenceName": "crmstoragejsonds",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
