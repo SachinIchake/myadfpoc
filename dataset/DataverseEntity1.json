@@ -1,0 +1,16 @@
+{
+	"name": "DataverseEntity1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Dataverse1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "CommonDataServiceForAppsEntity",
+		"schema": [],
+		"typeProperties": {
+			"entityName": "contact"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

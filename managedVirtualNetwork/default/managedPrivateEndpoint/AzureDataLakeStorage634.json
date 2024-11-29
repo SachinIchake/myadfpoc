@@ -1,0 +1,10 @@
+{
+	"name": "AzureDataLakeStorage634",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/b203c0ab-6d03-44ff-94e3-ba80db87ec92/resourceGroups/rg-exam/providers/Microsoft.Storage/storageAccounts/adhocstoageacct",
+		"groupId": "dfs",
+		"fqdns": [
+			"adhocstoageacct.dfs.core.windows.net"
+		]
+	}
+}
