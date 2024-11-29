@@ -1,0 +1,9 @@
+{
+	"name": "adb-poc-dev-ind",
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "82896f81-7f78-4815-8c2d-3ea8fd9ffce1",
+		"tenantId": "165b4233-5531-47c0-af60-9c373a08a658"
+	}
+}
